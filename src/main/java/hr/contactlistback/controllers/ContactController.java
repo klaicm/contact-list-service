@@ -1,7 +1,9 @@
 package hr.contactlistback.controllers;
 
 import hr.contactlistback.model.Contact;
+import hr.contactlistback.model.PhoneNumber;
 import hr.contactlistback.services.ContactService;
+import hr.contactlistback.services.PhoneNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,9 @@ public class ContactController {
 
     @Autowired
     ContactService contactService;
+
+    @Autowired
+    PhoneNumberService phoneNumberService;
 
     @GetMapping("/allContacts")
     public Set<Contact> getAllContacts() {
@@ -32,6 +37,15 @@ public class ContactController {
 
     @PostMapping(path = "/saveContact", consumes = "application/json", produces = "application/json")
     public Contact saveContact(@RequestBody Contact contact) {
+
+        if (contact.getId() != null) {
+            Set<PhoneNumber> phoneNumbers = phoneNumberService.findAll();
+            phoneNumbers.forEach(phoneNumber -> {
+                if (phoneNumber.getContactId() == contact.getId()) {
+                    phoneNumberService.deleteById(phoneNumber.getId());
+                }
+            });
+        }
 
         return contactService.save(contact);
     }

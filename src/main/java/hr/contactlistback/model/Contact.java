@@ -1,7 +1,12 @@
 package hr.contactlistback.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Entity
 @Table(name="contact")
@@ -9,10 +14,13 @@ public class Contact extends BaseEntity {
 
     private String firstName;
     private String lastName;
-    private String phoneNumbers;
     private String email;
     private String profilePhoto;
     private boolean isFavorite;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "contact")
+    @JsonManagedReference
+    Set<PhoneNumber> phoneNumbers;
 
     public String getFirstName() {
         return firstName;
@@ -28,14 +36,6 @@ public class Contact extends BaseEntity {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getPhoneNumbers() {
-        return phoneNumbers;
-    }
-
-    public void setPhoneNumbers(String phoneNumbers) {
-        this.phoneNumbers = phoneNumbers;
     }
 
     public String getEmail() {
@@ -60,5 +60,13 @@ public class Contact extends BaseEntity {
 
     public void setIsFavorite(boolean isFavorite) {
         this.isFavorite = isFavorite;
+    }
+
+    public Set<PhoneNumber> getPhoneNumbers() {
+        return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(Set<PhoneNumber> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
     }
 }
